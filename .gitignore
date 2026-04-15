@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Claude settings
+.claude/
+
+# Browser profile data (sensitive - contains cookies, login data)
+**/fb_profile/
+
+# Compressed archives
+*.tar.gz
+*.zip
+
+# Data files
+hn_data.json
+twitter_data.json
+youtube_data.json
