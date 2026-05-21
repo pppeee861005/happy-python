@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python List Comprehension 互動動畫演示</title>
+    <!-- 引入可愛的 Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Quicksand:wght@500;700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #ff8ba7;
+            --primary-light: #ffc6d9;
+            --secondary: #b8c1ec;
+            --bg-color: #f7f9fc;
+            --card-bg: #fffffe;
+            --text-color: #2b2c34;
+            --success: #a3e635;
+            --error: #f87171;
+            --shadow: 0 8px 30px rgba(255, 139, 167, 0.12);
+        }
+
+        body {
+            font-family: 'Quicksand', 'Fredoka', 'Microsoft JhengHei', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            color: var(--text-color);
+        }
+
+        .container {
+            width: 100%;
+            max-width: 960px;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 24px;
+            padding: 30px;
+            box-shadow: 0 12px 40px rgba(31, 38, 135, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        header {
+            text-align: center;
+        }
+
+        header h1 {
+            font-family: 'Fredoka', sans-serif;
+            margin: 0;
+            font-size: 2.2rem;
+            color: #ff5e7e;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.05);
+        }
+
+        header p {
+            margin: 5px 0 0 0;
+            font-size: 1.1rem;
+            color: #6c757d;
+        }
+
+        /* 程式碼展示面板 */
+        .code-panel {
+            background-color: #2d3748;
+            color: #f7fafc;
+            border-radius: 16px;
+            padding: 20px;
+            font-family: 'Source Code Pro', monospace;
+            font-size: 1.1rem;
+            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.3);
+            line-height: 1.6;
+        }
+
+        .code-line {
+            display: block;
+            padding: 4px 8px;
+            border-radius: 6px;
+            transition: background-color 0.3s;
+        }
+
+        .keyword { color: #f687b3; font-weight: bold; }
+        .number { color: #f6ad55; }
+        .comment { color: #a0aec0; font-style: italic; }
+        .function { color: #63b3ed; }
+        
+        .code-part {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+
+        /* 程式碼動態高亮樣式 */
+        .active-part {
+            background-color: rgba(255, 139, 167, 0.35);
+            box-shadow: 0 0 10px rgba(255, 139, 167, 0.6);
+            transform: scale(1.05);
+        }
+
+        .active-line {
+            background-color: rgba(99, 179, 237, 0.25);
+            box-shadow: inset 4px 0 0 #63b3ed;
+        }
+
+        /* 動畫畫布區域 */
+        .canvas-area {
+            position: relative;
+            background: #ffffff;
+            border-radius: 16px;
+            border: 2px solid #ffe3eb;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+        }
+
+        svg {
+            width: 100%;
+            height: auto;
+            max-width: 900px;
+        }
+
+        /* SVG 元素動畫樣式 */
+        .node-x {
+            transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.6s;
+        }
+
+        .node-res {
+            transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.6s;
+        }
+
+        .scanner {
+            transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        /* 聚焦發光效果 */
+        .focused rect {
+            stroke: #ffd13b !important;
+            stroke-width: 4px;
+            filter: drop-shadow(0 0 8px rgba(255, 209, 59, 0.6));
+        }
+
+        /* 抖動動畫定義（用於過濾掉的元素） */
+        @keyframes wobble {
+            0%, 100% { transform: translate(var(--x), 150px); }
+            15% { transform: translate(calc(var(--x) - 8px), 148px); }
+            30% { transform: translate(calc(var(--x) + 7px), 152px); }
+            45% { transform: translate(calc(var(--x) - 6px), 149px); }
+            60% { transform: translate(calc(var(--x) + 5px), 151px); }
+            75% { transform: translate(calc(var(--x) - 3px), 150px); }
+        }
+
+        .wobble {
+            animation: wobble 0.6s ease-in-out;
+        }
+
+        /* 控制面板 */
+        .control-panel {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            background: #fff0f3;
+            padding: 15px 25px;
+            border-radius: 16px;
+            border: 1px solid #ffd3de;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            font-family: 'Fredoka', 'Microsoft JhengHei', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        button:active {
+            transform: translateY(2px);
+        }
+
+        .btn-play {
+            background-color: #ff5e7e;
+            color: white;
+        }
+
+        .btn-play:hover {
+            background-color: #ff4066;
+            box-shadow: 0 4px 12px rgba(255, 94, 126, 0.3);
+        }
+
+        .btn-step {
+            background-color: #7f5af0;
+            color: white;
+        }
+
+        .btn-step:hover {
+            background-color: #6a45d9;
+            box-shadow: 0 4px 12px rgba(127, 90, 240, 0.3);
+        }
+
+        .btn-reset {
+            background-color: #e2e8f0;
+            color: #4a5568;
+        }
+
+        .btn-reset:hover {
+            background-color: #cbd5e0;
+        }
+
+        /* 速度調節器 */
+        .speed-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            color: #4a5568;
+        }
+
+        input[type="range"] {
+            -webkit-appearance: none;
+            width: 120px;
+            height: 6px;
+            background: #cbd5e0;
+            border-radius: 3px;
+            outline: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #ff5e7e;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            background: #ff4066;
+        }
+
+        /* 狀態說明面板 */
+        .status-panel {
+            background-color: #ebf8ff;
+            border-left: 5px solid #3182ce;
+            padding: 15px 20px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            color: #2b6cb0;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            box-shadow: var(--shadow);
+            transition: all 0.3s;
+        }
+
+        .status-panel b {
+            color: #2c5282;
+            font-family: 'Source Code Pro', monospace;
+            background: rgba(49, 130, 206, 0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Python List Comprehension 動畫教學</h1>
+        <p>視覺化演示 <code>[num for num in x if num >= 0]</code> 的運作流程 🐾</p>
+    </header>
+
+    <!-- 程式碼顯示 -->
+    <div class="code-panel">
+        <div class="code-line" id="line-x"><span class="keyword">x</span> = [<span class="number">1</span>, <span class="number">3</span>, <span class="number">5</span>, <span class="number">0</span>, <span class="number">-1</span>, <span class="number">3</span>, <span class="number">-2</span>]</div>
+        <div class="code-line" id="line-comprehension">
+            <span class="keyword">result</span> = [
+            <span class="code-part" id="part-expr">num</span> 
+            <span class="code-part" id="part-for">for num in x</span> 
+            <span class="code-part" id="part-if">if num &gt;= 0</span>
+            ]
+        </div>
+        <div class="code-line" id="line-print"><span class="function">print</span>(result)  <span class="comment"># 印出 <span id="comment-val" style="color: #68d391; font-weight: bold;">[ ]</span></span></div>
+    </div>
+
+    <!-- 視覺化動畫區域 -->
+    <div class="canvas-area">
+        <svg viewBox="0 0 900 450" width="900" height="450">
+            <!-- 定義漸層和濾鏡 -->
+            <defs>
+                <!-- 掃描光束漸層 -->
+                <linearGradient id="beam-green" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stop-color="#a3e635" stop-opacity="0.8"/>
+                    <stop offset="100%" stop-color="#a3e635" stop-opacity="0.0"/>
+                </linearGradient>
+                <linearGradient id="beam-red" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stop-color="#f87171" stop-opacity="0.8"/>
+                    <stop offset="100%" stop-color="#f87171" stop-opacity="0.0"/>
+                </linearGradient>
+                <linearGradient id="beam-normal" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stop-color="#ffd13b" stop-opacity="0.6"/>
+                    <stop offset="100%" stop-color="#ffd13b" stop-opacity="0.0"/>
+                </linearGradient>
+                
+                <!-- 卡片陰影 -->
+                <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+                    <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#000000" flood-opacity="0.08"/>
+                </filter>
+            </defs>
+
+            <!-- 標籤說明 -->
+            <text x="50" y="185" font-family="'Fredoka', sans-serif" font-weight="bold" font-size="18" fill="#a0aec0">輸入清單 x</text>
+            <text x="50" y="365" font-family="'Fredoka', sans-serif" font-weight="bold" font-size="18" fill="#a0aec0">結果清單 result</text>
+
+            <!-- ================= 輸入清單 X 的卡片與插槽 ================= -->
+            <!-- 預先畫出 x 清單的格子背景 -->
+            <g id="x-slots">
+                <!-- 我們用 JS 動態填寫或直接靜態畫出背景 -->
+                <rect x="150" y="150" width="60" height="60" rx="15" fill="none" stroke="#e2e8f0" stroke-width="2" stroke-dasharray="4,4"/>
+                <rect x="230" y="150" width="60" height="60" rx="15" fill="none" stroke="#e2e8f0" stroke-width="2" stroke-dasharray="4,4"/>
+                <rect x="310" y="150" width="60" height="60" rx="15" fill="none" stroke="#e2e8f0" stroke-width="2" stroke-dasharray="4,4"/>
+                <rect x="390" y="150" width="60" height="60" rx="15" fill="none" stroke="#e2e8f0" stroke-width="2" stroke-dasharray="4,4"/>
+                <rect x="470" y="150" width="60" height="60" rx="15" fill="none" stroke="#e2e8f0" stroke-width="2" stroke-dasharray="4,4"/>
+                <rect x="550" y="150" width="60" height="60" rx="15" fill="none" stroke="#e2e8f0" stroke-width="2" stroke-dasharray="4,4"/>
+                <rect x="630" y="150" width="60" height="60" rx="15" fill="none" stroke="#e2e8f0" stroke-width="2" stroke-dasharray="4,4"/>
+            </g>
+
+            <!-- X 卡片群組，用 style 屬性設定 transition X 軸位置 -->
+            <!-- 1, 3, 5, 0, -1, 3, -2 -->
+            <g id="card-x-0" class="node-x" style="transform: translate(150px, 150px); --x: 150px;">
+                <rect width="60" height="60" rx="15" fill="#e3f2fd" stroke="#90caf9" stroke-width="3" filter="url(#shadow)"/>
+                <text x="30" y="38" font-family="'Fredoka', sans-serif" font-weight="bold" font-size="24" fill="#1e88e5" text-anchor="middle">1</text>
+                <!-- 狀態小勾勾/叉叉，初始隱藏 -->
+                <circle cx="50" cy="10" r="10" fill="#a3e635" class="status-icon-check" opacity="0"/>
+                <path d="M46,10 L49,13 L55,7" stroke="#fff" stroke-width="2" fill="none" class="status-icon-check" opacity="0"/>
+            </g>
+
+            <g id="card-x-1" class="node-x" style="transform: translate(230px, 150px); --x: 230px;">
+                <rect width="60" height="60" rx="15" fill="#e3f2fd" stroke="#90caf9" stroke-width="3" filter="url(#shadow)"/>
+                <text x="30" y="38" font-family="'Fredoka', sans-serif" font-weight="bold" font-size="24" fill="#1e88e5" text-anchor="middle">3</text>
+                <circle cx="50" cy="10" r="10" fill="#a3e635" class="status-icon-check" opacity="0"/>
+                <path d="M46,10 L49,13 L55,7" stroke="#fff" stroke-width="2" fill="none" class="status-icon-check" opacity="0"/>
+            </g>
+
+            <g id="card-x-2" class="node-x" style="transform: translate(310px, 150px); --x: 310px;">
+                <rect width="60" height="60" rx="15" fill="#e3f2fd" stroke="#90caf9" stroke-width="3" filter="url(#shadow)"/>
+                <text x="30" y="38" font-family="'Fredoka', sans-serif" font-weight="bold" font-size="24" fill="#1e88e5" text-anchor="middle">5</text>
+                <circle cx="50" cy="10" r="10" fill="#a3e635" class="status-icon-check" opacity="0"/>
+                <path d="M46,10 L49,13 L55,7" stroke="#fff" stroke-width="2" fill="none" class="status-icon-check" opacity="0"/>
+            </g>
+
+            <g id="card-x-3" class="node-x" style="transform: translate(390px, 150px); --x: 390px;">
+                <rect width="60" height="60" rx="15" fill="#e8f5e9" stroke="#81c784" stroke-width="3" filter="url(#shadow)"/>
+                <text x="30" y="38" font-family="'Fredoka', sans-serif" font-weight="bold" font-size="24" fill="#2e7d32" text-anchor="middle">0</text>
+                <circle cx="50" cy="10" r="10" fill="#a3e635" class="status-icon-check" opacity="0"/>
+                <path d="M46,10 L49,13 L55,7" stroke="#fff" stroke-width="2" fill="none" class="status-icon-check" opacity="0"/>
+            </g>
+
+            <g id="card-x-4" class="node-x" style="transform: translate(470px, 150px); --x: 470px;">
+                <rect width="60" height="60" rx="15" fill="#ffebee" stroke="#ef9a9a" stroke-width="3" filter="url(#shadow)"/>
+                <text x="30" y="38" font-family="'Fredoka', sans-serif" font-weight="bold" font-size="24" fill="#c62828" text-anchor="middle">-1</text>
+                <circle cx="50" cy="10" r="10" fill="#f87171" class="status-icon-cross" opacity="0"/>
+                <path d="M45,5 L55,15 M55,5 L45,15" stroke="#fff" stroke-width="2" fill="none" class="status-icon-cross" opacity="0"/>
+            </g>
+
+            <g id="card-x-5" class="node-x" style="transform: translate(550px, 150px); --x: 550px;">
+                <rect width="60" height="60" rx="15" fill="#e3f2fd" stroke="#90caf9" stroke-width="3" filter="url(#shadow)"/>
+                <text x="30" y="38" font-family="'Fredoka', sans-serif" font-weight="bold" font-size="24" fill="#1e88e5" text-anchor="middle">3</text>
+                <circle cx="50" cy="10" r="10" fill="#a3e635" class="status-icon-check" opacity="0"/>
+                <path d="M46,10 L49,13 L55,7" stroke="#fff" stroke-width="2" fill="none" class="status-icon-check" opacity="0"/>
+            </g>
+
+            <g id="card-x-6" class="node-x" style="transform: translate(630px, 150px); --x: 630px;">
+                <rect width="60" height="60" rx="15" fill="#ffebee" stroke="#ef9a9a" stroke-width="3" filter="url(#shadow)"/>
+                <text x="30" y="38" font-family="'Fredoka', sans-serif" font-weight="bold" font-size="24" fill="#c62828" text-anchor="middle">-2</text>
+                <circle cx="50" cy="10" r="10" fill="#f87171" class="status-icon-cross" opacity="0"/>
+                <path d="M45,5 L55,15 M55,5 L45,15" stroke="#fff" stroke-width="2" fill="none" class="status-icon-cross" opacity="0"/>
+            </g>
+
+            <!-- ================= 結果清單 result 的插槽 ================= -->
+            <!-- 用虛線表示等待放入的結果插槽 -->
+            <g id="result-slots">
+                <rect x="230" y="330" width="60" height="60" rx="15" fill="none" stroke="#cbd5e0" stroke-width="2" stroke-dasharray="5,5"/>
+                <text x="260" y="410" font-family="'Fredoka', sans-serif" font-size="12" fill="#a0aec0" text-anchor="middle">result[0]</text>
+
+                <rect x="310" y="330" width="60" height="60" rx="15" fill="none" stroke="#cbd5e0" stroke-width="2" stroke-dasharray="5,5"/>
+                <text x="340" y="410" font-family="'Fredoka', sans-serif" font-size="12" fill="#a0aec0" text-anchor="middle">result[1]</text>
+
+                <rect x="390" y="330" width="60" height="60" rx="15" fill="none" stroke="#cbd5e0" stroke-width="2" stroke-dasharray="5,5"/>
+                <text x="420" y="410" font-family="'Fredoka', sans-serif" font-size="12" fill="#a0aec0" text-anchor="middle">result[2]</text>
+
+                <rect x="470" y="330" width="60" height="60" rx="15" fill="none" stroke="#cbd5e0" stroke-width="2" stroke-dasharray="5,5"/>
+                <text x="500" y="410" font-family="'Fredoka', sans-serif" font-size="12" fill="#a0aec0" text-anchor="middle">result[3]</text>
+
+                <rect x="550" y="330" width="60" height="60" rx="15" fill="none" stroke="#cbd5e0" stroke-width="2" stroke-dasharray="5,5"/>
+                <text x="580" y="410" font-family="'Fredoka', sans-serif" font-size="12" fill="#a0aec0" text-anchor="middle">result[4]</text>
+            </g>
+
+            <!-- ================= 動態飛入結果區的卡片 ================= -->
+            <!-- 預先建立 5 張結果卡片，預設隱藏 (opacity: 0) 且位於原輸入卡片位置，觸發時飛往各自插槽 -->
+            <g id="card-res-0" class="node-res" style="transform: translate(150px, 150px); opacity: 0; pointer-events: none;">
+                <rect width="60" height="60" rx="15" fill="#e8f5e9" stroke="#81c784" stroke-width="3" filter="url(#shadow)"/>
+                <text x="30" y="38" font-family="'Fredoka', sans-serif" font-weight="bold" font-size="24" fill="#2e7d32" text-anchor="middle">1</text>
+            </g>
+            <g id="card-res-1" class="node-res" style="transform: translate(230px, 150px); opacity: 0; pointer-events: none;">
+                <rect width="60" height="60" rx="15" fill="#e8f5e9" stroke="#81c784" stroke-width="3" filter="url(#shadow)"/>
+                <text x="30" y="38" font-family="'Fredoka', sans-serif" font-weight="bold" font-size="24" fill="#2e7d32" text-anchor="middle">3</text>
+            </g>
+            <g id="card-res-2" class="node-res" style="transform: translate(310px, 150px); opacity: 0; pointer-events: none;">
+                <rect width="60" height="60" rx="15" fill="#e8f5e9" stroke="#81c784" stroke-width="3" filter="url(#shadow)"/>
+                <text x="30" y="38" font-family="'Fredoka', sans-serif" font-weight="bold" font-size="24" fill="#2e7d32" text-anchor="middle">5</text>
+            </g>
+            <g id="card-res-3" class="node-res" style="transform: translate(390px, 150px); opacity: 0; pointer-events: none;">
+                <rect width="60" height="60" rx="15" fill="#e8f5e9" stroke="#81c784" stroke-width="3" filter="url(#shadow)"/>
+                <text x="30" y="38" font-family="'Fredoka', sans-serif" font-weight="bold" font-size="24" fill="#2e7d32" text-anchor="middle">0</text>
+            </g>
+            <g id="card-res-4" class="node-res" style="transform: translate(550px, 150px); opacity: 0; pointer-events: none;">
+                <rect width="60" height="60" rx="15" fill="#e8f5e9" stroke="#81c784" stroke-width="3" filter="url(#shadow)"/>
+                <text x="30" y="38" font-family="'Fredoka', sans-serif" font-weight="bold" font-size="24" fill="#2e7d32" text-anchor="middle">3</text>
+            </g>
+
+            <!-- ================= 可愛小機器人掃描器 ================= -->
+            <g id="scanner" class="scanner" style="transform: translate(180px, 60px);">
+                <!-- 掃描光束，初始隱藏 -->
+                <polygon points="0,20 -40,90 40,90" fill="url(#beam-normal)" opacity="0" id="scanner-beam" style="transition: opacity 0.3s; pointer-events: none;"/>
+                
+                <!-- 機器人身體 -->
+                <ellipse cx="0" cy="0" rx="32" ry="18" fill="#ff8ba7" stroke="#ff5e7e" stroke-width="3" filter="url(#shadow)"/>
+                <ellipse cx="0" cy="-5" rx="25" ry="10" fill="#fff" opacity="0.3"/>
+                <!-- 眼睛 -->
+                <circle cx="-10" cy="2" r="4" fill="#2b2c34"/>
+                <circle cx="10" cy="2" r="4" fill="#2b2c34"/>
+                <!-- 害羞腮紅 -->
+                <ellipse cx="-18" cy="7" rx="5" ry="2" fill="#ff4d4d" opacity="0.5"/>
+                <ellipse cx="18" cy="7" rx="5" ry="2" fill="#ff4d4d" opacity="0.5"/>
+                <!-- 天線 -->
+                <line x1="0" y1="-18" x2="0" y2="-28" stroke="#ff5e7e" stroke-width="3"/>
+                <circle cx="0" cy="-31" r="5" fill="#ffd13b"/>
+            </g>
+        </svg>
+    </div>
+
+    <!-- 狀態描述 -->
+    <div class="status-panel" id="status-panel">
+        ✨ 點擊下面的「播放」或「單步執行」，來觀看 list comprehension 的神奇運作吧！
+    </div>
+
+    <!-- 控制按鈕 -->
+    <div class="control-panel">
+        <div class="buttons">
+            <button class="btn-play" id="btn-play">
+                <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16" id="play-icon">
+                    <path d="M11.596 8.697l-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z"/>
+                </svg>
+                <span id="play-text">播放</span>
+            </button>
+            <button class="btn-step" id="btn-step">
+                <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/>
+                    <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/>
+                </svg>
+                單步執行
+            </button>
+            <button class="btn-reset" id="btn-reset">
+                <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M8 3a5 5 0 1 1-4.546 2.914.5.5 0 0 0-.908-.417A6 6 0 1 0 8 2v1z"/>
+                    <path d="M8 4.466V.534a.25.25 0 0 0-.41-.192L5.23 2.308c-.12.1-.12.284 0 .384l2.36 1.966A.25.25 0 0 0 8 4.466z"/>
+                </svg>
+                重設
+            </button>
+        </div>
+
+        <div class="speed-control">
+            <span>動畫速度：</span>
+            <input type="range" id="speed-slider" min="600" max="2500" value="1200" step="100">
+            <span id="speed-value">1.2秒</span>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 資料結構定義
+    const xData = [1, 3, 5, 0, -1, 3, -2];
+    const resData = [1, 3, 5, 0, 3];
+    // xData 中的元素如果滿足 >= 0，對應到 result 中的索引；若過濾則為 -1
+    const mapIdx = [0, 1, 2, 3, -1, 4, -1];
+
+    let currentIdx = 0;
+    let currentPhase = 0; // 0: 移動並高亮 for, 1: 判斷並高亮 if, 2: 動作並高亮 expr/結果, 3: 整理狀態
+    let isPlaying = false;
+    let timer = null;
+    let speed = 1200; // 毫秒
+
+    // 狀態紀錄
+    let currentResult = [];
+
+    // DOM 元素選取
+    const btnPlay = document.getElementById('btn-play');
+    const btnStep = document.getElementById('btn-step');
+    const btnReset = document.getElementById('btn-reset');
+    const speedSlider = document.getElementById('speed-slider');
+    const speedValue = document.getElementById('speed-value');
+    const statusPanel = document.getElementById('status-panel');
+    const commentVal = document.getElementById('comment-val');
+    
+    // 播放圖示 SVG path
+    const playIconPath = `<path d="M11.596 8.697l-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z"/>`;
+    const pauseIconPath = `<path d="M6 3.5a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-1 0V4a.5.5 0 0 1 .5-.5zm4 0a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-1 0V4a.5.5 0 0 1 .5-.5z"/>`;
+
+    // 初始化與重設
+    function resetAnimation() {
+        pause();
+        currentIdx = 0;
+        currentPhase = 0;
+        currentResult = [];
+        
+        // 恢復所有 X 卡片的原始位置與透明度
+        for (let i = 0; i < xData.length; i++) {
+            const card = document.getElementById(`card-x-${i}`);
+            const originalX = 150 + i * 80;
+            card.style.transform = `translate(${originalX}px, 150px)`;
+            card.style.opacity = '1';
+            card.classList.remove('wobble');
+            card.classList.remove('focused');
+            
+            // 隱藏勾勾與叉叉
+            const checks = card.querySelectorAll('.status-icon-check');
+            checks.forEach(el => el.style.opacity = '0');
+            const crosses = card.querySelectorAll('.status-icon-cross');
+            crosses.forEach(el => el.style.opacity = '0');
+        }
+
+        // 隱藏所有飛出來的 Result 卡片
+        for (let j = 0; j < resData.length; j++) {
+            const resCard = document.getElementById(`card-res-${j}`);
+            resCard.style.transition = 'none'; // 暫時關閉動畫以重設位置
+            const srcIdx = getSourceIdx(j);
+            const srcX = 150 + srcIdx * 80;
+            resCard.style.transform = `translate(${srcX}px, 150px)`;
+            resCard.style.opacity = '0';
+            resCard.offsetHeight; // 強制重流
+            resCard.style.transition = 'transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.6s';
+        }
+
+        // 重設機器人掃描器位置
+        const scanner = document.getElementById('scanner');
+        scanner.style.transform = 'translate(180px, 60px)';
+        const beam = document.getElementById('scanner-beam');
+        beam.style.opacity = '0';
+
+        // 清除所有代碼高亮
+        clearCodeHighlights();
+        document.getElementById('line-print').classList.remove('active-line');
+        commentVal.textContent = '[ ]';
+        commentVal.style.color = '#a0aec0';
+
+        // 重設狀態訊息
+        updateStatus("✨ 點擊下面的「播放」或「單步執行」，來觀看 list comprehension 的神奇運作吧！");
+    }
+
+    // 獲取 result 中第 j 個元素原本來自 xData 中的哪個索引
+    function getSourceIdx(resIdx) {
+        return mapIdx.indexOf(resIdx);
+    }
+
+    // 更新狀態面板訊息
+    function updateStatus(htmlContent) {
+        statusPanel.innerHTML = htmlContent;
+    }
+
+    // 清除代碼中所有 .active-part
+    function clearCodeHighlights() {
+        document.querySelectorAll('.code-part').forEach(part => {
+            part.classList.remove('active-part');
+        });
+    }
+
+    // 單步前進核心邏輯
+    function stepForward() {
+        if (currentIdx >= xData.length) {
+            // 完成所有元素走訪，高亮 print(result)
+            clearCodeHighlights();
+            document.getElementById('line-print').classList.add('active-line');
+            commentVal.textContent = `[${currentResult.join(', ')}]`;
+            commentVal.style.color = '#68d391';
+            
+            // 掃描器回中央
+            const scanner = document.getElementById('scanner');
+            scanner.style.transform = 'translate(450px, 60px)';
+            document.getElementById('scanner-beam').style.opacity = '0';
+            
+            updateStatus(`🎉 <b>走訪完成！</b>最終結果 <code>result</code> 清單為 <b>[${currentResult.join(', ')}]</b>！`);
+            pause();
+            return;
+        }
+
+        const val = xData[currentIdx];
+        const cardX = document.getElementById(`card-x-${currentIdx}`);
+        const xPos = 150 + currentIdx * 80;
+
+        switch (currentPhase) {
+            case 0:
+                // == 階段 0: 掃描器移動到目前位置，高亮 for num in x ==
+                clearCodeHighlights();
+                document.getElementById('line-print').classList.remove('active-line');
+                
+                // 聚焦目前卡片，移除其他卡片的聚焦
+                for (let i = 0; i < xData.length; i++) {
+                    document.getElementById(`card-x-${i}`).classList.remove('focused');
+                }
+                cardX.classList.add('focused');
+
+                // 移動機器人
+                const scanner = document.getElementById('scanner');
+                scanner.style.transform = `translate(${xPos + 30}px, 60px)`;
+                
+                // 關閉掃描光束，切換為黃色（準備掃描）
+                const beam = document.getElementById('scanner-beam');
+                beam.style.opacity = '0.3';
+                beam.setAttribute('fill', 'url(#beam-normal)');
+
+                // 高亮對應代碼
+                document.getElementById('part-for').classList.add('active-part');
+
+                updateStatus(`🔍 <b>步驟 ${currentIdx + 1}：</b> 迴圈取出清單 x 的下一個元素 <code>num</code> = <b>${val}</b>`);
+                
+                currentPhase = 1;
+                break;
+
+            case 1:
+                // == 階段 1: 開啟紅綠掃描光束，進行 if 條件判斷 ==
+                clearCodeHighlights();
+                document.getElementById('part-if').classList.add('active-part');
+
+                const beamColor = val >= 0 ? 'url(#beam-green)' : 'url(#beam-red)';
+                document.getElementById('scanner-beam').setAttribute('fill', beamColor);
+                document.getElementById('scanner-beam').style.opacity = '0.7';
+
+                updateStatus(`🤔 <b>判斷條件：</b> 測試 <code>num >= 0</code> ➜ <b>${val}</b> >= 0 嗎？`);
+                
+                currentPhase = 2;
+                break;
+
+            case 2:
+                // == 階段 2: 依判斷結果執行對應動作，高亮輸出運算式 (num) ==
+                clearCodeHighlights();
+                
+                if (val >= 0) {
+                    // 條件成立：保留元素
+                    document.getElementById('part-expr').classList.add('active-part');
+                    
+                    // 顯示勾勾
+                    const checks = cardX.querySelectorAll('.status-icon-check');
+                    checks.forEach(el => el.style.opacity = '1');
+
+                    // 取得 result 插槽索引並執行飛入動畫
+                    const resIdx = mapIdx[currentIdx];
+                    currentResult.push(val);
+                    
+                    const resCard = document.getElementById(`card-res-${resIdx}`);
+                    resCard.style.opacity = '1';
+                    resCard.style.transform = `translate(${230 + resIdx * 80}px, 330px)`;
+
+                    // 更新結果清單的即時顯示
+                    commentVal.textContent = `[${currentResult.join(', ')}]`;
+                    commentVal.style.color = '#e2e8f0';
+
+                    updateStatus(`✅ <b>條件成立！</b> <code>${val} >= 0</code> 成立。保留此元素，並將 <b>${val}</b> 放入結果中。`);
+                } else {
+                    // 條件不成立：過濾元素
+                    // 顯示叉叉
+                    const crosses = cardX.querySelectorAll('.status-icon-cross');
+                    crosses.forEach(el => el.style.opacity = '1');
+
+                    // 卡片抖動
+                    cardX.classList.add('wobble');
+
+                    // 延遲後讓卡片掉落褪色
+                    setTimeout(() => {
+                        if (currentIdx - 1 === xData.indexOf(val) || cardX.classList.contains('wobble')) {
+                            cardX.style.transform = `translate(${xPos}px, 260px)`;
+                            cardX.style.opacity = '0.25';
+                        }
+                    }, 200);
+
+                    updateStatus(`❌ <b>條件不成立！</b> <code>${val} >= 0</code> 不成立。此元素 <b>${val}</b> 會被過濾掉！`);
+                }
+
+                currentPhase = 3;
+                break;
+
+            case 3:
+                // == 階段 3: 清除本次步驟聚焦，準備下一個循環 ==
+                document.getElementById('scanner-beam').style.opacity = '0';
+                cardX.classList.remove('focused');
+                clearCodeHighlights();
+                
+                currentIdx++;
+                currentPhase = 0;
+                
+                // 自動幫單步點擊時多走一步到下個週期的起點，提供更好的節奏感
+                if (!isPlaying) {
+                    stepForward();
+                } else {
+                    updateStatus(`⏳ 準備讀取下一個元素...`);
+                }
+                break;
+        }
+    }
+
+    // 自動播放控制器
+    function play() {
+        if (isPlaying) return;
+        isPlaying = true;
+        document.getElementById('play-icon').innerHTML = pauseIconPath;
+        document.getElementById('play-text').textContent = '暫停';
+        btnStep.disabled = true;
+        
+        runTimer();
+    }
+
+    function pause() {
+        isPlaying = false;
+        document.getElementById('play-icon').innerHTML = playIconPath;
+        document.getElementById('play-text').textContent = '播放';
+        btnStep.disabled = false;
+        
+        if (timer) {
+            clearTimeout(timer);
+            timer = null;
+        }
+    }
+
+    function runTimer() {
+        if (!isPlaying) return;
+        stepForward();
+        timer = setTimeout(runTimer, speed);
+    }
+
+    // 事件監聽綁定
+    btnPlay.addEventListener('click', () => {
+        if (isPlaying) {
+            pause();
+        } else {
+            // 如果已經播放完了，按播放會自動重設
+            if (currentIdx >= xData.length) {
+                resetAnimation();
+                setTimeout(play, 300);
+            } else {
+                play();
+            }
+        }
+    });
+
+    btnStep.addEventListener('click', () => {
+        if (currentIdx >= xData.length) {
+            resetAnimation();
+        }
+        stepForward();
+    });
+
+    btnReset.addEventListener('click', resetAnimation);
+
+    speedSlider.addEventListener('input', (e) => {
+        // 反轉滑桿效果，值越小速度越快，值越大速度越慢
+        // 滑桿範圍：600ms (快) ~ 2500ms (慢)
+        speed = parseInt(e.target.value);
+        const sec = (speed / 1000).toFixed(1);
+        speedValue.textContent = `${sec}秒`;
+    });
+
+    // 頁面載入時進行一次重設初始化
+    resetAnimation();
+</script>
+
+</body>
+</html>
