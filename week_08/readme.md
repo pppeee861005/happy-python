@@ -1,0 +1,3 @@
+玩game要先下載音樂檔
+Child's Nightmare
+One_Final_Life_Remaining
