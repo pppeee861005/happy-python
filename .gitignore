@@ -3,6 +3,18 @@ __pycache__/
 *.py[cod]
 *.pyo
 
+# Environment variables (contains sensitive API keys and credentials)
+.env
+.env.local
+.env.*.local
+.env.*.py
+
+# API keys and credentials (sensitive)
+*.key
+*.pem
+credentials.json
+secret.json
+
 # Claude settings
 .claude/
 
@@ -17,3 +29,14 @@ __pycache__/
 hn_data.json
 twitter_data.json
 youtube_data.json
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
