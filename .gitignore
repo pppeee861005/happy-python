@@ -8,12 +8,71 @@ __pycache__/
 .env.local
 .env.*.local
 .env.*.py
+.env.production
+.env.development
+.env.staging
+.env.*
 
 # API keys and credentials (sensitive)
 *.key
 *.pem
+*.pkcs12
+*.p12
+*.pfx
 credentials.json
 secret.json
+secrets.json
+*.secrets
+**/secrets/*
+**/private/*
+private_key.txt
+
+# Google Cloud and Firebase
+google-credentials.json
+google-*.json
+firebase-*.json
+service-account-*.json
+
+# LINE Bot credentials
+line_credentials.json
+line_token.txt
+line_secret.txt
+
+# Database credentials
+database.yml
+database.yaml
+db_config.json
+database_credentials.json
+
+# SSH and authentication
+id_rsa
+id_rsa.pub
+id_dsa
+id_dsa.pub
+*.ppk
+authorized_keys
+
+# API configuration files
+api_keys.json
+api_secrets.json
+config.local.json
+config.production.json
+*.local.json
+
+# AWS credentials
+aws_credentials
+.aws/credentials
+.aws/config
+
+# Azure credentials
+azure_credentials.json
+.azure/
+
+# Sensitive configuration
+config/secrets.yml
+config/secrets.yaml
+config/database.yml
+secrets/
 
 # Claude settings
 .claude/
