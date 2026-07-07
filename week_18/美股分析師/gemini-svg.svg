@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500">
+  <!-- CSS 樣式設定 -->
+  <style>
+    .bg { fill: #1a1a24; }
+    .title { fill: #ffffff; font-family: 'Segoe UI', sans-serif; font-size: 22px; font-weight: bold; letter-spacing: 1px; }
+    .grid-line { fill: none; stroke: #3e3e50; stroke-width: 1; }
+    .axis-line { fill: none; stroke: #5c5c70; stroke-dasharray: 4, 4; stroke-width: 1; }
+    .data-polygon { 
+        fill: rgba(0, 255, 200, 0.35); 
+        stroke: #00ffc8; 
+        stroke-width: 2.5; 
+        filter: drop-shadow(0 0 8px rgba(0,255,200,0.5)); 
+    }
+    .data-point { fill: #ffffff; stroke: #00ffc8; stroke-width: 2; }
+    .label-text { fill: #d1d1d1; font-family: 'Segoe UI', sans-serif; font-size: 14px; font-weight: 600; }
+    .score-text { fill: #00ffc8; font-family: 'Segoe UI', sans-serif; font-size: 16px; font-weight: bold; }
+  </style>
+
+  <!-- 背景底色 -->
+  <rect class="bg" width="500" height="500" rx="12" />
+
+  <!-- 標題 -->
+  <text x="250" y="40" text-anchor="middle" class="title">特斯拉 (TSLA) 五象限戰力雷達圖</text>
+
+  <!-- 背景五邊形網格 (從外到內: 10分, 8分, 6分, 4分, 2分) -->
+  <polygon class="grid-line" points="250,100 392.7,203.6 338.2,371.4 161.8,371.4 107.3,203.6" />
+  <polygon class="grid-line" points="250,130 364.1,212.9 320.5,347.1 179.5,347.1 135.9,212.9" />
+  <polygon class="grid-line" points="250,160 335.6,222.2 302.9,322.8 197.1,322.8 164.4,222.2" />
+  <polygon class="grid-line" points="250,190 307.1,231.5 285.3,298.5 214.7,298.5 192.9,231.5" />
+  <polygon class="grid-line" points="250,220 278.5,240.7 267.6,274.3 232.4,274.3 221.5,240.7" />
+
+  <!-- 從中心發散的軸線 -->
+  <line class="axis-line" x1="250" y1="250" x2="250" y2="100" />
+  <line class="axis-line" x1="250" y1="250" x2="392.7" y2="203.6" />
+  <line class="axis-line" x1="250" y1="250" x2="338.2" y2="371.4" />
+  <line class="axis-line" x1="250" y1="250" x2="161.8" y2="371.4" />
+  <line class="axis-line" x1="250" y1="250" x2="107.3" y2="203.6" />
+
+  <!-- TSLA 實際戰力多邊形 (分數: 成長5, 獲利6, 護城河8, 估值3, 動能7) -->
+  <polygon class="data-polygon" points="250,175 335.6,222.2 320.5,347.1 223.6,286.4 150.1,217.6" />
+
+  <!-- 資料端點圓圈 -->
+  <circle class="data-point" cx="250" cy="175" r="4.5" />
+  <circle class="data-point" cx="335.6" cy="222.2" r="4.5" />
+  <circle class="data-point" cx="320.5" cy="347.1" r="4.5" />
+  <circle class="data-point" cx="223.6" cy="286.4" r="4.5" />
+  <circle class="data-point" cx="150.1" cy="217.6" r="4.5" />
+
+  <!-- 各維度文字標籤 -->
+  <!-- 成長性 Growth -->
+  <text x="250" y="70" text-anchor="middle" class="label-text">成長性 Growth</text>
+  <text x="250" y="90" text-anchor="middle" class="score-text">5</text>
+
+  <!-- 獲利能力 Profitability -->
+  <text x="405" y="195" text-anchor="start" class="label-text">獲利能力</text>
+  <text x="405" y="215" text-anchor="start" class="label-text">Profitability <tspan class="score-text">6</tspan></text>
+
+  <!-- 護城河 Moat -->
+  <text x="350" y="400" text-anchor="middle" class="label-text">護城河 Moat</text>
+  <text x="350" y="420" text-anchor="middle" class="score-text">8</text>
+
+  <!-- 估值 Valuation -->
+  <text x="150" y="400" text-anchor="middle" class="label-text">估值 Valuation</text>
+  <text x="150" y="420" text-anchor="middle" class="score-text">3</text>
+
+  <!-- 動能 Momentum -->
+  <text x="95" y="195" text-anchor="end" class="label-text">動能</text>
+  <text x="95" y="215" text-anchor="end" class="label-text">Momentum <tspan class="score-text">7</tspan></text>
+
+</svg>
