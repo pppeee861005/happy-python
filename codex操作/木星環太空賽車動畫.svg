@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     viewBox="0 0 1200 675"
+     width="1200" height="675"
+     role="img" aria-labelledby="title desc">
+  <title id="title">木星環上的太空賽車動畫</title>
+  <desc id="desc">渡渡鳥、火鳥與烏龜在木星環上反覆競速的 SVG 動畫。</desc>
+
+  <defs>
+    <radialGradient id="spaceGlow" cx="70%" cy="35%">
+      <stop offset="0" stop-color="#17335f"/>
+      <stop offset="0.55" stop-color="#07172f"/>
+      <stop offset="1" stop-color="#020814"/>
+    </radialGradient>
+
+    <radialGradient id="jupiterBase" cx="38%" cy="28%">
+      <stop offset="0" stop-color="#fff3c9"/>
+      <stop offset="0.48" stop-color="#f4b35e"/>
+      <stop offset="1" stop-color="#9d4d20"/>
+    </radialGradient>
+
+    <linearGradient id="ringGold" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#8e502b"/>
+      <stop offset="0.25" stop-color="#f4c36f"/>
+      <stop offset="0.55" stop-color="#fff0b1"/>
+      <stop offset="0.8" stop-color="#c97837"/>
+      <stop offset="1" stop-color="#6a3624"/>
+    </linearGradient>
+
+    <linearGradient id="phoenixBody" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffea4f"/>
+      <stop offset="0.45" stop-color="#ff8a00"/>
+      <stop offset="1" stop-color="#d41414"/>
+    </linearGradient>
+
+    <filter id="softGlow" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <filter id="fireGlow" x="-80%" y="-80%" width="260%" height="260%">
+      <feGaussianBlur stdDeviation="6" result="b"/>
+      <feColorMatrix in="b" type="matrix"
+        values="1 0 0 0 0.5
+                0 0.5 0 0 0.15
+                0 0 0.2 0 0
+                0 0 0 1 0"/>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <path id="racePath"
+      d="M 95 550
+         C 260 630, 520 600, 760 470
+         C 930 380, 1050 300, 1130 205"/>
+
+    <clipPath id="jupiterClip">
+      <circle cx="900" cy="215" r="250"/>
+    </clipPath>
+  </defs>
+
+  <!-- 太空背景 -->
+  <rect width="1200" height="675" fill="url(#spaceGlow)"/>
+
+  <!-- 星星 -->
+  <g fill="#fff8cf">
+    <circle cx="70" cy="70" r="2"><animate attributeName="opacity" values=".25;1;.25" dur="2.2s" repeatCount="indefinite"/></circle>
+    <circle cx="145" cy="115" r="3"><animate attributeName="opacity" values="1;.2;1" dur="3.3s" repeatCount="indefinite"/></circle>
+    <circle cx="225" cy="58" r="2"><animate attributeName="opacity" values=".3;1;.3" dur="2.8s" repeatCount="indefinite"/></circle>
+    <circle cx="332" cy="140" r="2.5"><animate attributeName="opacity" values="1;.3;1" dur="2s" repeatCount="indefinite"/></circle>
+    <circle cx="420" cy="76" r="1.8"><animate attributeName="opacity" values=".3;1;.3" dur="1.7s" repeatCount="indefinite"/></circle>
+    <circle cx="525" cy="128" r="3"><animate attributeName="opacity" values=".2;1;.2" dur="2.5s" repeatCount="indefinite"/></circle>
+    <circle cx="650" cy="63" r="2.2"><animate attributeName="opacity" values="1;.25;1" dur="3.1s" repeatCount="indefinite"/></circle>
+    <circle cx="748" cy="105" r="1.8"><animate attributeName="opacity" values=".2;1;.2" dur="2.4s" repeatCount="indefinite"/></circle>
+    <circle cx="1065" cy="66" r="3"><animate attributeName="opacity" values=".2;1;.2" dur="1.9s" repeatCount="indefinite"/></circle>
+    <circle cx="1140" cy="130" r="2"><animate attributeName="opacity" values="1;.2;1" dur="2.7s" repeatCount="indefinite"/></circle>
+    <circle cx="1080" cy="440" r="2.2"><animate attributeName="opacity" values=".3;1;.3" dur="2.3s" repeatCount="indefinite"/></circle>
+    <circle cx="190" cy="385" r="1.8"><animate attributeName="opacity" values="1;.2;1" dur="3.4s" repeatCount="indefinite"/></circle>
+  </g>
+
+  <!-- 遠方小行星 -->
+  <g fill="#8d694e" stroke="#4d3529" stroke-width="3">
+    <path d="M120 200 l18-13 22 8 7 18-17 14-25-3z">
+      <animateTransform attributeName="transform" type="rotate"
+        from="0 145 207" to="360 145 207" dur="18s" repeatCount="indefinite"/>
+    </path>
+    <path d="M1060 165 l20-8 17 11-5 21-22 4-15-13z">
+      <animateTransform attributeName="transform" type="rotate"
+        from="360 1075 176" to="0 1075 176" dur="13s" repeatCount="indefinite"/>
+    </path>
+  </g>
+
+  <!-- 木星 -->
+  <g>
+    <circle cx="900" cy="215" r="250" fill="url(#jupiterBase)" stroke="#ffda87" stroke-width="6"/>
+    <g clip-path="url(#jupiterClip)" opacity=".95">
+      <path d="M620 68 C730 20 810 95 930 60 S1110 45 1190 70"
+            fill="none" stroke="#fff1c7" stroke-width="34"/>
+      <path d="M620 110 C760 65 850 145 980 105 S1110 90 1190 125"
+            fill="none" stroke="#d66d28" stroke-width="30"/>
+      <path d="M620 165 C760 115 850 205 990 165 S1120 145 1195 175"
+            fill="none" stroke="#ffe6a3" stroke-width="40"/>
+      <path d="M620 230 C760 175 850 270 1000 225 S1120 210 1195 250"
+            fill="none" stroke="#a94d25" stroke-width="28"/>
+      <path d="M625 285 C760 240 860 330 1000 290 S1125 270 1195 310"
+            fill="none" stroke="#f9cf7d" stroke-width="45"/>
+      <path d="M650 345 C780 310 860 390 1010 350 S1130 335 1190 370"
+            fill="none" stroke="#d8732d" stroke-width="34"/>
+
+      <ellipse cx="1010" cy="285" rx="65" ry="32" fill="#b74121" stroke="#ff9b3a" stroke-width="8">
+        <animateTransform attributeName="transform" type="rotate"
+          values="-3 1010 285;3 1010 285;-3 1010 285"
+          dur="5s" repeatCount="indefinite"/>
+      </ellipse>
+      <ellipse cx="1010" cy="285" rx="42" ry="18" fill="#e86622" opacity=".8"/>
+    </g>
+    <circle cx="825" cy="125" r="205" fill="none" stroke="#fff" stroke-width="12" opacity=".09"/>
+  </g>
+
+  <!-- 木星環／賽道 -->
+  <path d="M -40 610
+           C 220 720, 520 650, 790 510
+           C 990 405, 1130 310, 1240 140"
+        fill="none" stroke="#43251f" stroke-width="118" stroke-linecap="round" opacity=".75"/>
+  <path d="M -40 600
+           C 220 690, 520 635, 790 500
+           C 990 400, 1130 300, 1240 130"
+        fill="none" stroke="url(#ringGold)" stroke-width="88" stroke-linecap="round"/>
+  <path d="M -40 600
+           C 220 690, 520 635, 790 500
+           C 990 400, 1130 300, 1240 130"
+        fill="none" stroke="#fff5ca" stroke-width="10" stroke-linecap="round"
+        stroke-dasharray="80 34" opacity=".8">
+    <animate attributeName="stroke-dashoffset" from="0" to="-228" dur="2.2s" repeatCount="indefinite"/>
+  </path>
+  <path d="M -40 628
+           C 220 718, 520 663, 790 528
+           C 990 428, 1130 328, 1240 158"
+        fill="none" stroke="#6f3925" stroke-width="8" stroke-linecap="round"
+        stroke-dasharray="14 24" opacity=".8">
+    <animate attributeName="stroke-dashoffset" from="0" to="190" dur="1.4s" repeatCount="indefinite"/>
+  </path>
+
+  <!-- 賽車路徑提示光 -->
+  <use href="#racePath" fill="none" stroke="#ffd979" stroke-width="2" opacity=".18"/>
+
+  <!-- 渡渡鳥 -->
+  <g>
+    <animateMotion dur="8s" repeatCount="indefinite" rotate="auto"
+      begin="-1.2s">
+      <mpath href="#racePath"/>
+    </animateMotion>
+    <g transform="scale(.72)">
+      <animateTransform attributeName="transform" type="translate"
+        values="0 0;0 -5;0 0" dur=".42s" repeatCount="indefinite" additive="sum"/>
+      <!-- 藍色速度線 -->
+      <g stroke="#6fe8ff" stroke-width="8" stroke-linecap="round" opacity=".9">
+        <line x1="-110" y1="-10" x2="-60" y2="-10"/>
+        <line x1="-120" y1="10" x2="-68" y2="8"/>
+        <line x1="-102" y1="28" x2="-58" y2="24"/>
+      </g>
+      <!-- 身體 -->
+      <ellipse cx="0" cy="0" rx="52" ry="40" fill="#38536b" stroke="#102536" stroke-width="7"/>
+      <ellipse cx="12" cy="10" rx="34" ry="30" fill="#f4ddb4"/>
+      <!-- 頭 -->
+      <circle cx="28" cy="-38" r="33" fill="#526f86" stroke="#102536" stroke-width="7"/>
+      <path d="M44 -43 Q88 -55 92 -32 Q82 -12 48 -20z" fill="#f6b72c" stroke="#102536" stroke-width="7"/>
+      <path d="M72 -48 Q100 -45 92 -30 Q84 -18 67 -23z" fill="#26333d"/>
+      <!-- 眼睛 -->
+      <circle cx="34" cy="-47" r="10" fill="white"/>
+      <circle cx="37" cy="-46" r="4" fill="#111"/>
+      <!-- 翅膀 -->
+      <ellipse cx="-18" cy="0" rx="23" ry="14" fill="#2b4359" stroke="#102536" stroke-width="5"
+               transform="rotate(-20 -18 0)">
+        <animateTransform attributeName="transform" type="rotate"
+          values="-25 -18 0;20 -18 0;-25 -18 0"
+          dur=".34s" repeatCount="indefinite"/>
+      </ellipse>
+      <!-- 尾 -->
+      <path d="M-47 -8 q-28 -22 -25 5 q-18 -2 -5 18 q-7 15 17 11"
+            fill="#f7f4e8" stroke="#102536" stroke-width="5"/>
+      <!-- 腳 -->
+      <g stroke="#c77e10" stroke-width="9" stroke-linecap="round">
+        <line x1="-6" y1="34" x2="-20" y2="58">
+          <animate attributeName="x2" values="-30;-5;-30" dur=".36s" repeatCount="indefinite"/>
+        </line>
+        <line x1="20" y1="34" x2="35" y2="56">
+          <animate attributeName="x2" values="45;15;45" dur=".36s" repeatCount="indefinite"/>
+        </line>
+      </g>
+    </g>
+  </g>
+
+  <!-- 火鳥 -->
+  <g>
+    <animateMotion dur="6.1s" repeatCount="indefinite" rotate="auto"
+      begin="-2.6s">
+      <mpath href="#racePath"/>
+    </animateMotion>
+    <g transform="scale(.72)">
+      <animateTransform attributeName="transform" type="translate"
+        values="0 0;0 -8;0 0" dur=".55s" repeatCount="indefinite" additive="sum"/>
+      <!-- 火焰尾巴 -->
+      <g filter="url(#fireGlow)">
+        <path d="M-35 3 C-85 -38 -118 -24 -142 -12 C-111 -4 -103 5 -135 25 C-93 23 -70 18 -35 10z"
+              fill="#ff3b00">
+          <animate attributeName="d"
+            values="M-35 3 C-85 -38 -118 -24 -142 -12 C-111 -4 -103 5 -135 25 C-93 23 -70 18 -35 10z;
+                    M-35 3 C-95 -20 -118 -38 -152 -4 C-113 1 -108 10 -142 31 C-91 27 -65 19 -35 10z;
+                    M-35 3 C-85 -38 -118 -24 -142 -12 C-111 -4 -103 5 -135 25 C-93 23 -70 18 -35 10z"
+            dur=".45s" repeatCount="indefinite"/>
+        </path>
+        <path d="M-35 5 C-82 -24 -103 -12 -124 -3 C-99 4 -90 9 -112 20 C-80 19 -59 14 -35 9z"
+              fill="#ffd42a"/>
+      </g>
+      <!-- 身體 -->
+      <ellipse cx="4" cy="0" rx="48" ry="30" fill="url(#phoenixBody)" stroke="#7f120d" stroke-width="7"/>
+      <!-- 頭與喙 -->
+      <circle cx="43" cy="-24" r="25" fill="#ff7a00" stroke="#7f120d" stroke-width="7"/>
+      <path d="M60 -24 L93 -14 L63 -6z" fill="#ffd52a" stroke="#7f120d" stroke-width="6"/>
+      <circle cx="48" cy="-31" r="7" fill="#fff"/>
+      <circle cx="51" cy="-30" r="3" fill="#111"/>
+      <!-- 鳳冠 -->
+      <path d="M25 -43 l-5 -28 18 20 8 -29 8 31 18 -20 -5 31z"
+            fill="#ff5a00" stroke="#7f120d" stroke-width="5"/>
+      <!-- 翅膀 -->
+      <path d="M0 -7 Q-8 -68 38 -62 Q16 -38 13 -6z"
+            fill="#ffcc27" stroke="#7f120d" stroke-width="7">
+        <animateTransform attributeName="transform" type="rotate"
+          values="-12 6 -2;18 6 -2;-12 6 -2"
+          dur=".48s" repeatCount="indefinite"/>
+      </path>
+      <path d="M0 8 Q-5 57 40 45 Q15 27 15 7z"
+            fill="#ef321f" stroke="#7f120d" stroke-width="7">
+        <animateTransform attributeName="transform" type="rotate"
+          values="10 5 8;-16 5 8;10 5 8"
+          dur=".48s" repeatCount="indefinite"/>
+      </path>
+    </g>
+  </g>
+
+  <!-- 烏龜 -->
+  <g>
+    <animateMotion dur="7.25s" repeatCount="indefinite" rotate="auto"
+      begin="-4.1s">
+      <mpath href="#racePath"/>
+    </animateMotion>
+    <g transform="scale(.72)">
+      <animateTransform attributeName="transform" type="translate"
+        values="0 0;0 -3;0 0" dur=".7s" repeatCount="indefinite" additive="sum"/>
+      <!-- 綠色速度線 -->
+      <g stroke="#9cff43" stroke-width="8" stroke-linecap="round" opacity=".9">
+        <line x1="-115" y1="-10" x2="-70" y2="-10"/>
+        <line x1="-125" y1="8" x2="-68" y2="7"/>
+        <line x1="-105" y1="27" x2="-64" y2="22"/>
+      </g>
+      <!-- 四肢 -->
+      <g fill="#68b43d" stroke="#1d4a22" stroke-width="6">
+        <ellipse cx="-32" cy="30" rx="19" ry="10">
+          <animateTransform attributeName="transform" type="rotate"
+            values="-25 -32 30;25 -32 30;-25 -32 30"
+            dur=".42s" repeatCount="indefinite"/>
+        </ellipse>
+        <ellipse cx="22" cy="31" rx="19" ry="10">
+          <animateTransform attributeName="transform" type="rotate"
+            values="25 22 31;-25 22 31;25 22 31"
+            dur=".42s" repeatCount="indefinite"/>
+        </ellipse>
+        <ellipse cx="-34" cy="-5" rx="17" ry="9">
+          <animateTransform attributeName="transform" type="rotate"
+            values="18 -34 -5;-18 -34 -5;18 -34 -5"
+            dur=".42s" repeatCount="indefinite"/>
+        </ellipse>
+      </g>
+      <!-- 頭 -->
+      <ellipse cx="58" cy="2" rx="28" ry="22" fill="#78c94f" stroke="#1d4a22" stroke-width="7"/>
+      <circle cx="66" cy="-5" r="8" fill="#fff"/>
+      <circle cx="69" cy="-4" r="3.5" fill="#111"/>
+      <path d="M72 9 q10 7 17 -1" fill="none" stroke="#1d4a22" stroke-width="4" stroke-linecap="round"/>
+      <!-- 甲殼 -->
+      <ellipse cx="0" cy="0" rx="56" ry="38" fill="#2f7d35" stroke="#153d1c" stroke-width="8"/>
+      <path d="M-40 -6 L-22 -25 L6 -30 L31 -20 L43 0 L27 23 L-3 31 L-30 18z"
+            fill="none" stroke="#8bc34a" stroke-width="5"/>
+      <path d="M-22 -25 L-3 1 L6 -30 M-3 1 L31 -20 M-3 1 L27 23 M-3 1 L-30 18"
+            fill="none" stroke="#8bc34a" stroke-width="4" opacity=".9"/>
+    </g>
+  </g>
+
+  <!-- 前景碎石 -->
+  <g fill="#7f563a" stroke="#3b271e" stroke-width="3">
+    <ellipse cx="245" cy="612" rx="14" ry="8">
+      <animateTransform attributeName="transform" type="translate"
+        values="0 0;-18 -4;0 0" dur="1.8s" repeatCount="indefinite"/>
+    </ellipse>
+    <ellipse cx="520" cy="575" rx="10" ry="6">
+      <animateTransform attributeName="transform" type="translate"
+        values="0 0;-14 -3;0 0" dur="1.3s" repeatCount="indefinite"/>
+    </ellipse>
+    <ellipse cx="825" cy="456" rx="11" ry="6">
+      <animateTransform attributeName="transform" type="translate"
+        values="0 0;-12 -2;0 0" dur="1.5s" repeatCount="indefinite"/>
+    </ellipse>
+  </g>
+
+  <!-- 標題牌 -->
+  <g transform="translate(55 45)">
+    <rect x="0" y="0" width="330" height="64" rx="20"
+          fill="#07172f" opacity=".72" stroke="#ffd66b" stroke-width="3"/>
+    <text x="165" y="42" text-anchor="middle"
+          font-family="Noto Sans TC, Microsoft JhengHei, sans-serif"
+          font-size="28" font-weight="700" fill="#fff6cd">
+      木星環・太空大賽車
+    </text>
+  </g>
+</svg>
