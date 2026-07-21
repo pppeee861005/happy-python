@@ -38,11 +38,20 @@ LINE_CHANNEL_SECRET = os.getenv("LINE_CHANNEL_SECRET")
 # --- Google ADK 初始化 ---
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 APP_NAME = "line_chat_bot"
+SYSTEM_PROMPT_PATH = os.path.join(
+    os.path.dirname(__file__),
+    "..",
+    "澆水agent",
+    "watering_prompt.md",
+)
+with open(SYSTEM_PROMPT_PATH, "r", encoding="utf-8") as prompt_file:
+    system_prompt = prompt_file.read().strip()
+
 session_service = InMemorySessionService()
 agent = LlmAgent(
     name="line_chat_agent",
     model="gemini-3.5-flash",
-    instruction="你是一個親切有趣的 AI 助手，請用繁體中文簡短回覆。",
+    instruction=system_prompt,
 )
 runner = Runner(
     agent=agent,
