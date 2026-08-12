@@ -8,8 +8,12 @@ venv/
 .venv/
 env/
 ENV/
+virtualenv/
 **/venv/
 **/.venv/
+**/env/
+**/ENV/
+**/virtualenv/
 
 # Environment variables (contains sensitive API keys and credentials)
 .env
