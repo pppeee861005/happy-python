@@ -107,3 +107,6 @@ youtube_data.json
 # OS files
 .DS_Store
 Thumbs.db
+
+# Independent nested repositories
+/苗苗餐卷/
