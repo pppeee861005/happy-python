@@ -1,0 +1,14 @@
+# 本機與雲端密鑰
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# 實驗產生的原始紀錄
+results/*.csv
+
